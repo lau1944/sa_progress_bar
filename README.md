@@ -1,4 +1,4 @@
-##  sa_progress_bar
+##  SaProgressBar
 A simple progress bar controller
 
 # Screenshot
