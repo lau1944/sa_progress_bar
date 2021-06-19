@@ -3,7 +3,7 @@ A simple progress bar controller
 
 # Screenshot
 
-<img src="/screenshot.png" height="450" alt="Progressbar">
+[<img src="/screenshot.png" height="450" alt="Progressbar">](https://github.com/lau1944/sa_progress_bar/blob/main/screenshot.png)
 
 
 # How To Use
