@@ -10,25 +10,24 @@ A simple progress bar controller
 
 ```dart
 SaProgressBar(
-  progress: progress,
-  bufferProgress: 0.5,
-  onTap: (value) {
-    setState(() {
-       progress = value;
-      });
-  }
+  controller: _controller,
   onMoved: (value) {
-    setState(() {
-       progress = value;
-      });
-    },
- )
-
+    // progress on moved callback
+    _controller.moveTo(value);
+    //print('onMove: $value');
+  },
+  onTap: (value) {
+    // progress on tap callback
+    _controller.moveTo(value);
+    print('onTap: $value');
+  },
+)
 ```
 
-`progress` : The indicator position ( 0.0 - 1.0)
+`ProgressController`: responsible for control the progress on main stream and buffer stream
 
-`bufferProgress` : If progressbar needs buffer range, you can set buffer progress. 
+please check out [controller.moveTo()] [controller.moveBufferTo()],
+note that if you don't call these methods on callback function, the indicator would not response.
 
 `onMoved` : indicator's drag action callback.
 

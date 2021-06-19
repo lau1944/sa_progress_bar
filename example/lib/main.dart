@@ -15,6 +15,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
   double progress = 0.0;
+  final ProgressController _controller = ProgressController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +25,16 @@ class _MyAppState extends State<MyApp> {
           height: 45,
           padding: EdgeInsets.symmetric(horizontal: 45),
           child: SaProgressBar(
-            progress: progress,
+            controller: _controller,
             onMoved: (value) {
-              setState(() {
-                progress = value;
-              });
+              // progress on moved callback
+              _controller.moveTo(value);
+              //print('onMove: $value');
+            },
+            onTap: (value) {
+              // progress on tap callback
+              _controller.moveTo(value);
+              print('onTap: $value');
             },
           ),
         ),
