@@ -26,7 +26,9 @@ SaProgressBar(
 
 `ProgressController`: responsible for control the progress on main stream and buffer stream
 
-please check out [controller.moveTo()] [controller.moveBufferTo()],
+please check out `controller.moveTo()` `controller.moveBufferTo()`
+
+
 note that if you don't call these methods on callback function, the indicator would not response.
 
 `onMoved` : indicator's drag action callback.
