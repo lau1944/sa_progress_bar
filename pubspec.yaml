@@ -1,7 +1,6 @@
 name: sa_progress_bar
 description: A progress bar controller
-version: 0.0.1
-author: jimmy leo
+version: 0.0.2
 repository: https://github.com/lau1944/sa_progress_bar
 
 environment:
