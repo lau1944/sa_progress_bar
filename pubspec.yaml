@@ -1,7 +1,8 @@
 name: sa_progress_bar
 description: A progress bar controller
 version: 0.0.1
-homepage:
+author: jimmy leo
+repository: https://github.com/lau1944/sa_progress_bar
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
