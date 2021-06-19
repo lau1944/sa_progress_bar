@@ -81,6 +81,8 @@ class ProgressBarView extends CustomPainter {
   bool? hitTest(Offset position) {
     if (_beginOffset != null && _endOffset != null && _isInLine(position)) {
       if (onTap != null) onTap!(position.dx / _endOffset!.dx);
+      // return false in case drag gesture intercept by this
+      return false;
     }
 
     return super.hitTest(position);
@@ -89,7 +91,23 @@ class ProgressBarView extends CustomPainter {
   bool _isInLine(
     Offset position,
   ) {
-    return (position.dx > _beginOffset!.dx && position.dx < _endOffset!.dx) &&
-        (position.dy > _beginOffset!.dy && position.dy < _endOffset!.dy);
+    double r = indicatorSize / 2;
+    return (position.dx >= _beginOffset!.dx && position.dx <= _endOffset!.dx) &&
+        (position.dy >= _beginOffset!.dy - r &&
+            position.dy <= _beginOffset!.dy + r) &&
+        !_isInIndicator(position, _indicatorOffset!);
+  }
+
+  bool _isInIndicator(Offset position, Offset targetPosition) {
+    double pX = position.dx;
+    double pY = position.dy;
+    double tX = targetPosition.dx;
+    double tY = targetPosition.dy;
+
+    if (pX < 0) return false;
+
+    double _radius = indicatorSize / 2;
+    return (pX <= tX + _radius && pX >= tX - _radius) &&
+        (pY <= tY + _radius && pY >= tY - _radius);
   }
 }

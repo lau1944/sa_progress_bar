@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sa_progress_bar/src/progress_bar_view.dart';
+import 'package:sa_progress_bar/src/progress_controller.dart';
 
 class SaProgressBar extends StatefulWidget {
   const SaProgressBar(
-      {required this.progress,
-      this.bufferProgress = 0.0,
+      {required this.controller,
       this.indicatorSize = 15,
       this.primaryColor = Colors.blue,
       this.bufferColor = Colors.lightBlueAccent,
@@ -18,10 +18,14 @@ class SaProgressBar extends StatefulWidget {
       : super(key: key);
 
   /// indicator position progress (0.0 - 1.0)
-  final double progress;
+  // Use [ProgressController] instead
+  // final double progress;
 
   /// buffer progress
-  final double bufferProgress;
+  // Use [ProgressController] instead
+  //final double bufferProgress;
+
+  final ProgressController controller;
 
   /// indicator size
   final double indicatorSize;
@@ -58,41 +62,65 @@ class _SaProgressBarState extends State<SaProgressBar> {
 
   /// give it acceptable offset for drag behavior,
   /// in case use drags to fast, the indicator cannot catch up
-  final double _acceptableOffset = 10;
+  final double _acceptableOffset = 20;
   bool isDragging = false;
   late final size;
   Offset? _indicatorOffset;
   Offset? _endOffset;
 
+  late final ProgressController _controller;
+
   @override
   void initState() {
+    _controller = widget.controller;
+    _attachListener();
+
+    _progress = _controller.progress;
+    _bufferProgress = _controller.bufferProgress;
     _indicatorSize = widget.indicatorSize;
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    _progress = widget.progress;
-    _bufferProgress = widget.bufferProgress;
     _calculateOffset();
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _attachListener() {
+    _controller.addListener(() {
+      setState(() {
+        _progress = _controller.progress;
+        _bufferProgress = _controller.bufferProgress;
+      });
+    });
   }
 
   void _calculateOffset() {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       size = context.size;
-      _indicatorOffset = Offset(size!.width * widget.progress, size.height / 2);
+      _indicatorOffset = Offset(size!.width * _progress, size.height / 2);
       _endOffset = Offset(size.width, size.height / 2);
     });
   }
 
   bool _isInIndicator(Offset position, Offset targetPosition) {
+    print(position);
+    print(targetPosition);
     double pX = position.dx;
     double pY = position.dy;
     double tX = targetPosition.dx;
     double tY = targetPosition.dy;
 
     if (pX < 0) return false;
+
+    if (isDragging) return true;
 
     double _radius = widget.indicatorSize / 2 + _acceptableOffset;
     return (pX <= tX + _radius && pX >= tX - _radius) &&
@@ -117,6 +145,7 @@ class _SaProgressBarState extends State<SaProgressBar> {
             indicatorSize: _indicatorSize,
             edgeRadius: widget.radius,
             onTap: widget.onTap,
+            onMoved: widget.onMoved,
           ),
         ),
       ),
@@ -141,15 +170,19 @@ class _SaProgressBarState extends State<SaProgressBar> {
         _endOffset != null &&
         widget.onMoved != null &&
         _isInIndicator(details.localPosition, _indicatorOffset!)) {
-      _progress = details.localPosition.dx / _endOffset!.dx;
-      _indicatorOffset = Offset(size!.width * _progress, size.height / 2);
-      if (_progress >= 0 && _progress <= 1) widget.onMoved!(_progress);
+      final progress = details.localPosition.dx / _endOffset!.dx;
+      if (progress >= 0 && progress <= 1) {
+        _progress = progress;
+        _indicatorOffset = Offset(size!.width * progress, size.height / 2);
+        widget.onMoved!(progress);
+      }
     }
   }
 
   void _handleDragEnd(DragEndDetails details) {
     if (isDragging) {
       setState(() {
+        _indicatorOffset = Offset(size!.width * _progress, size.height / 2);
         isDragging = false;
         _indicatorSize -= 5;
       });
