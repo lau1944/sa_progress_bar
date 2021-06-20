@@ -27,13 +27,9 @@ class _MyAppState extends State<MyApp> {
           child: SaProgressBar(
             controller: _controller,
             onMoved: (value) {
-              // progress on moved callback
-              _controller.moveTo(value);
-              //print('onMove: $value');
+              print('onMove: $value');
             },
             onTap: (value) {
-              // progress on tap callback
-              _controller.moveTo(value);
               print('onTap: $value');
             },
           ),
