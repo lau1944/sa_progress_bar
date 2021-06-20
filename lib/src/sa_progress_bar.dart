@@ -5,7 +5,7 @@ import 'package:sa_progress_bar/src/progress_controller.dart';
 
 class SaProgressBar extends StatefulWidget {
   const SaProgressBar(
-      {required this.controller,
+      {this.controller,
       this.indicatorSize = 15,
       this.primaryColor = Colors.blue,
       this.bufferColor = Colors.lightBlueAccent,
@@ -25,7 +25,7 @@ class SaProgressBar extends StatefulWidget {
   // Use [ProgressController] instead
   //final double bufferProgress;
 
-  final ProgressController controller;
+  final ProgressController? controller;
 
   /// indicator size
   final double indicatorSize;
@@ -72,7 +72,7 @@ class _SaProgressBarState extends State<SaProgressBar> {
 
   @override
   void initState() {
-    _controller = widget.controller;
+    _controller = widget.controller ?? ProgressController();
     _attachListener();
 
     _progress = _controller.progress;
@@ -89,16 +89,20 @@ class _SaProgressBarState extends State<SaProgressBar> {
 
   @override
   void dispose() {
+    if (widget.controller == null)
+      _controller.dispose();
     //._controller.dispose();
     super.dispose();
   }
 
   void _attachListener() {
     _controller.addListener(() {
-      setState(() {
-        _progress = _controller.progress;
-        _bufferProgress = _controller.bufferProgress;
-      });
+      if (mounted) {
+        setState(() {
+          _progress = _controller.progress;
+          _bufferProgress = _controller.bufferProgress;
+        });
+      }
     });
   }
 
@@ -142,8 +146,14 @@ class _SaProgressBarState extends State<SaProgressBar> {
             untouchedColor: widget.untouchedColor,
             indicatorSize: _indicatorSize,
             edgeRadius: widget.radius,
-            onTap: widget.onTap,
-            onMoved: widget.onMoved,
+            onTap: (value) {
+              _controller.moveTo(value);
+              if (widget.onTap != null) widget.onTap!(value);
+            },
+            onMoved: (value) {
+              _controller.moveTo(value);
+              if (widget.onMoved != null) widget.onMoved!(value);
+            },
           ),
         ),
       ),
