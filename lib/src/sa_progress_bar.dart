@@ -182,6 +182,7 @@ class _SaProgressBarState extends State<SaProgressBar> {
       if (progress >= 0 && progress <= 1) {
         _progress = progress;
         _indicatorOffset = Offset(size!.width * progress, size.height / 2);
+        _controller.moveTo(progress);
         widget.onMoved!(progress);
       }
     }
