@@ -89,7 +89,7 @@ class _SaProgressBarState extends State<SaProgressBar> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    //._controller.dispose();
     super.dispose();
   }
 
@@ -111,8 +111,6 @@ class _SaProgressBarState extends State<SaProgressBar> {
   }
 
   bool _isInIndicator(Offset position, Offset targetPosition) {
-    print(position);
-    print(targetPosition);
     double pX = position.dx;
     double pY = position.dy;
     double tX = targetPosition.dx;
