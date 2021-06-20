@@ -6,6 +6,7 @@ import 'package:sa_progress_bar/src/progress_controller.dart';
 class SaProgressBar extends StatefulWidget {
   const SaProgressBar(
       {this.controller,
+      this.initProgress = 0,
       this.indicatorSize = 15,
       this.primaryColor = Colors.blue,
       this.bufferColor = Colors.lightBlueAccent,
@@ -18,8 +19,7 @@ class SaProgressBar extends StatefulWidget {
       : super(key: key);
 
   /// indicator position progress (0.0 - 1.0)
-  // Use [ProgressController] instead
-  // final double progress;
+  final double initProgress;
 
   /// buffer progress
   // Use [ProgressController] instead
@@ -73,6 +73,7 @@ class _SaProgressBarState extends State<SaProgressBar> {
   @override
   void initState() {
     _controller = widget.controller ?? ProgressController();
+    _controller.moveTo(widget.initProgress);
     _attachListener();
 
     _progress = _controller.progress;
@@ -89,8 +90,7 @@ class _SaProgressBarState extends State<SaProgressBar> {
 
   @override
   void dispose() {
-    if (widget.controller == null)
-      _controller.dispose();
+    if (widget.controller == null) _controller.dispose();
     //._controller.dispose();
     super.dispose();
   }
